@@ -6,7 +6,7 @@ def checkPlaying():
     load_dotenv()
     url = "https://api.spotify.com/v1/me/player"
     headers = {
-        "Authorization": "Bearer" + os.getenv("SPOTIFY_ACCESS_TOKEN")
+        "Authorization": "Bearer " + os.getenv("SPOTIFY_ACCESS_TOKEN")
     }
     params = {
         "market": "GB"
@@ -32,7 +32,7 @@ def checkPlaying():
 def getCurrentTrack():
     url = "https://api.spotify.com/v1/me/player/currently-playing"
     headers = {
-        "Authorization": "Bearer" + os.getenv("SPOTIFY_ACCESS_TOKEN")
+        "Authorization": "Bearer " + os.getenv("SPOTIFY_ACCESS_TOKEN")
     }
     params = {
         "market": "GB"

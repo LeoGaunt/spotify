@@ -7,9 +7,10 @@ from utilities import checkPlaying, getCurrentTrack
 
 @app.route('/')
 def index():
-    if checkPlaying() is None:
+    playing = checkPlaying()
+    if playing is None:
         return redirect('/error')
-    elif checkPlaying():
+    elif playing:
         return redirect('/playing')
     return redirect('/idle')
 
@@ -19,9 +20,10 @@ def idle():
 
 @app.route('/playing')
 def playing():
-    if checkPlaying() is None:
+    playing = checkPlaying()
+    if playing is None:
         return redirect('/error')
-    elif not checkPlaying():
+    elif not playing:
         return redirect('/idle')
     track, artist, album = getCurrentTrack()
     return render_template('playing.html', track=track, artist=artist, album=album)
