@@ -1,17 +1,8 @@
 import requests
-import os
-from dotenv import load_dotenv
 
-def checkPlaying():
-    load_dotenv()
-    url = "https://api.spotify.com/v1/me/player"
-    headers = {
-        "Authorization": "Bearer " + os.getenv("SPOTIFY_ACCESS_TOKEN")
-    }
-    params = {
-        "market": "GB"
-    }
-    response = requests.get(url, headers=headers, params=params)
+def checkPlaying(user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = requests.get( "https://api.spotify.com/v1/me/player", headers=headers, params={"market": "GB"})
     if response.status_code == 200:
         return True
     elif response.status_code == 204:
@@ -29,15 +20,9 @@ def checkPlaying():
         print(f"Unexpected error: {response.status_code} - {response.text}")
         return None
 
-def getCurrentTrack():
-    url = "https://api.spotify.com/v1/me/player/currently-playing"
-    headers = {
-        "Authorization": "Bearer " + os.getenv("SPOTIFY_ACCESS_TOKEN")
-    }
-    params = {
-        "market": "GB"
-    }
-    response = requests.get(url, headers=headers, params=params)
+def getCurrentTrack(user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = requests.get("https://api.spotify.com/v1/me/player/currently-playing", headers=headers, params={"market": "GB"})
     if response.status_code == 200:
         data = response.json()
         track = data.get('item', {}).get('name', 'Unknown Track')
