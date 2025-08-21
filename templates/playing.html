@@ -1,9 +1,75 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Now Playing</h1>
-    <p>Track: {{ track }}</p>
-    <p>Artist: {{ artist }}</p>
-    <p>Album: {{ album }}</p>
-    <p>Previous Listens: {{ previous_listens }}</p>
-    <a href="{{ url_for('skip')}}">Skip Track</a>
+<style>
+    .player-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .album-container {
+        position: relative;
+        width: 350px;
+        height: 350px;
+        margin-bottom: 20px;
+    }
+
+    .album-cover {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .skip-button {
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        padding: 12px 20px;
+        background-color: #1DB954;
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 50px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        transition: background-color 0.2s;
+    }
+
+    .skip-button:hover {
+        background-color: #1ed760cc;
+    }
+
+    .track-info {
+        text-align: center;
+    }
+
+    .track-info h2 {
+        margin: 5px 0;
+        font-size: 2em;
+    }
+
+    .track-info p {
+        margin: 3px 0;
+        color: #555;
+    }
+</style>
+
+<div class="player-wrapper">
+    <div class="album-container">
+        <img class="album-cover" src="{{ album_cover_url }}" alt="Album cover">
+        <a class="skip-button" href="{{ url_for('skip') }}">Skip</a>
+    </div>
+
+    <div class="track-info">
+        <h2>{{ track }}</h2>
+        <p>{{ artist }}</p>
+        <p><em>{{ album }}</em></p>
+        <p>Previous Listens: {{ previous_listens }}</p>
+    </div>
+
+    <img src="{{ url_for('generate_graph', track_id=id) }}" alt="Weekly listens">
+</div>
 {% endblock %}

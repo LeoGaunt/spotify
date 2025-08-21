@@ -1,7 +1,8 @@
 from config import app
-from flask import render_template, redirect, request, session, url_for
+from flask import render_template, redirect, request, session, send_file
 import requests
-from utilities import checkPlaying, getCurrentTrack, skipTrack, calculatePreviousListens
+from utilities import checkPlaying, getCurrentTrack, skipTrack, calculatePreviousListens, getAlbumCoverURL
+from graphs import listens_by_week, plot_listens_image
 
 # Spotify app credentials
 CLIENT_ID = "855f96d962fa471b916c7cd22d50ace9"
@@ -68,8 +69,18 @@ def playing():
     headers = {"Authorization": f"Bearer {access_token}"}
     r = requests.get("https://api.spotify.com/v1/me/player/currently-playing", headers=headers)
     id, track, artist, album = getCurrentTrack(access_token)
+    album_cover_url = getAlbumCoverURL(id)
     previous_listens = calculatePreviousListens(id)
-    return render_template('playing.html', track=track, artist=artist, album=album, previous_listens=previous_listens)
+    return render_template('playing.html', track=track, artist=artist, album=album, previous_listens=previous_listens, album_cover_url=album_cover_url, id=id)
+
+@app.route("/generate_graph/<track_id>")
+def generate_graph(track_id):
+    weeks, counts = listens_by_week(track_id)
+    if weeks is None:
+        return ""
+
+    img = plot_listens_image(weeks, counts, track_name=track_id)
+    return send_file(img, mimetype='image/png')
 
 @app.route('/skip')
 def skip():
