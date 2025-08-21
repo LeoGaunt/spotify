@@ -79,7 +79,7 @@ def generate_graph(track_id):
     if weeks is None:
         return ""
 
-    img = plot_listens_image(weeks, counts, track_name=track_id)
+    img = plot_listens_image(weeks, counts)
     return send_file(img, mimetype='image/png')
 
 @app.route('/skip')
