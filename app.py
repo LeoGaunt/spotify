@@ -54,6 +54,14 @@ def callback():
 
 @app.route('/idle')
 def idle():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect("/login")
+    playing = checkPlaying(session["access_token"])
+    if playing is None:
+        return redirect('/error')
+    elif playing:
+        return redirect('/playing')
     return render_template('idle.html')
 
 @app.route('/playing')
