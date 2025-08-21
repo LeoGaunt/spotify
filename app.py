@@ -1,7 +1,7 @@
 from config import app
 from flask import render_template, redirect, request, session, url_for
 import requests
-from utilities import checkPlaying, getCurrentTrack
+from utilities import checkPlaying, getCurrentTrack, skipTrack
 
 # Spotify app credentials
 CLIENT_ID = "855f96d962fa471b916c7cd22d50ace9"
@@ -9,7 +9,7 @@ CLIENT_SECRET = "de860b487af94cd190c37cb3110e3c2a"
 REDIRECT_URI = "http://127.0.0.1:5000/callback"
 
 # Scopes required to read what I want to access
-SCOPE = "user-read-currently-playing user-read-playback-state"
+SCOPE = "user-read-currently-playing user-read-playback-state user-modify-playback-state"
 
 # Authorization URL
 AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -69,6 +69,18 @@ def playing():
     r = requests.get("https://api.spotify.com/v1/me/player/currently-playing", headers=headers)
     track, artist, album = getCurrentTrack(access_token)
     return render_template('playing.html', track=track, artist=artist, album=album)
+
+@app.route('/skip')
+def skip():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect("/login")
+    if skipTrack(access_token) == 0:
+        return redirect('/playing')
+    elif skipTrack(access_token) == 1:
+        return redirect('/error')
+    else:
+        return redirect('/idle')
 
 @app.route('/error')
 def error():

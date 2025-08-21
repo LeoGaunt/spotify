@@ -32,3 +32,24 @@ def getCurrentTrack(user_access_token):
     else:
         print(f"Error fetching current track: {response.status_code} - {response.text}")
         return None, None, None
+    
+def skipTrack(user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = requests.post("https://api.spotify.com/v1/me/player/next", headers=headers)
+    if response.status_code == 204:
+        return 0
+    elif response.status_code == 401:
+        print("Access token expired or invalid. Please refresh the token.")
+        return 1
+    elif response.status_code == 403:
+        print("Access forbidden. Check your permissions.")
+        return 1
+    elif response.status_code == 404:
+        print("No active device found. Please start playback on a device.")
+        return 2
+    elif response.status_code == 429:
+        print("Rate limit exceeded. Please try again later.")
+        return 1
+    else:
+        print(f"Unexpected error: {response.status_code} - {response.text}")
+        return 1
