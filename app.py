@@ -1,7 +1,7 @@
 from config import app
 from flask import render_template, redirect, request, session, url_for
 import requests
-from utilities import checkPlaying, getCurrentTrack, skipTrack
+from utilities import checkPlaying, getCurrentTrack, skipTrack, calculatePreviousListens
 
 # Spotify app credentials
 CLIENT_ID = "855f96d962fa471b916c7cd22d50ace9"
@@ -67,8 +67,9 @@ def playing():
         return redirect('/idle')
     headers = {"Authorization": f"Bearer {access_token}"}
     r = requests.get("https://api.spotify.com/v1/me/player/currently-playing", headers=headers)
-    track, artist, album = getCurrentTrack(access_token)
-    return render_template('playing.html', track=track, artist=artist, album=album)
+    id, track, artist, album = getCurrentTrack(access_token)
+    previous_listens = calculatePreviousListens(id)
+    return render_template('playing.html', track=track, artist=artist, album=album, previous_listens=previous_listens)
 
 @app.route('/skip')
 def skip():

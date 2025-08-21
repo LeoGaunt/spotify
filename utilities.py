@@ -1,4 +1,6 @@
 import requests
+import json
+import os
 
 def checkPlaying(user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
@@ -25,13 +27,14 @@ def getCurrentTrack(user_access_token):
     response = requests.get("https://api.spotify.com/v1/me/player/currently-playing", headers=headers, params={"market": "GB"})
     if response.status_code == 200:
         data = response.json()
+        id = data.get('item', {}).get('id', 'Unknown ID')
         track = data.get('item', {}).get('name', 'Unknown Track')
         artist = ', '.join([artist['name'] for artist in data.get('item', {}).get('artists', [])])
         album = data.get('item', {}).get('album', {}).get('name', 'Unknown Album')
-        return track, artist, album
+        return id, track, artist, album
     else:
         print(f"Error fetching current track: {response.status_code} - {response.text}")
-        return None, None, None
+        return None, None, None, None
     
 def skipTrack(user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
@@ -53,3 +56,27 @@ def skipTrack(user_access_token):
     else:
         print(f"Unexpected error: {response.status_code} - {response.text}")
         return 1
+
+def calculatePreviousListens(playing_track_id):
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), "data")
+    previous_listens = 0
+
+    for filename in os.listdir(UPLOAD_FOLDER):
+        if filename.endswith(".json"):
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            with open(filepath, "r", encoding="utf-8") as file:
+                try:
+                    data = json.load(file)
+                except json.JSONDecodeError:
+                    print(f"Skipping invalid JSON file: {filename}")
+                    continue
+
+                # Loop through each "play event" in the JSON
+                for entry in data:
+                    # Get track ID from URI
+                    uri = entry.get("spotify_track_uri")
+                    if uri:
+                        track_id = uri.split(":")[-1]
+                        if track_id == playing_track_id:
+                            previous_listens += 1
+    return previous_listens
