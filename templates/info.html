@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .player-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .album-container {
+        position: relative;
+        width: 350px;
+        height: 350px;
+        margin-bottom: 20px;
+    }
+
+    .album-cover {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .track-info {
+        text-align: center;
+    }
+
+    .track-info h2 {
+        margin: 5px 0;
+        font-size: 2em;
+    }
+
+    .track-info p {
+        margin: 3px 0;
+        color: #555;
+    }
+</style>
+
+<div class="player-wrapper">
+    <div class="album-container">
+        <img class="album-cover" src="{{ album_cover_url }}" alt="Album cover">
+    </div>
+
+    <div class="track-info">
+        <h2>{{ track }}</h2>
+        <p>{{ artist }}</p>
+        <p><em>{{ album }}</em></p>
+        <p>Previous Listens: {{ previous_listens }}</p>
+    </div>
+
+    <img src="{{ url_for('generate_graph', track_id=id) }}" alt="Weekly listens">
+</div>
+{% endblock %}

@@ -36,6 +36,20 @@ def getCurrentTrack(user_access_token):
         print(f"Error fetching current track: {response.status_code} - {response.text}")
         return None, None, None, None
     
+def getDataFromID(track_id, spotify_access_token):
+    url = f"https://api.spotify.com/v1/tracks/{track_id}"
+    headers = {"Authorization": f"Bearer {spotify_access_token}"}
+    response = requests.get(url, headers=headers, params={"market": "GB"})
+    if response.status_code == 200:
+        data = response.json()
+        track = data.get('name', 'Unknown Track')
+        artist = ', '.join([artist['name'] for artist in data.get('artists', [])])
+        album = data.get('album', {}).get('name', 'Unknown Album')
+        return track, artist, album
+    else:
+        print(f"Error fetching track data: {response.status_code} - {response.text}")
+        return None, None, None
+    
 def skipTrack(user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = requests.post("https://api.spotify.com/v1/me/player/next", headers=headers)
