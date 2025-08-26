@@ -77,7 +77,7 @@ def playing():
     headers = {"Authorization": f"Bearer {access_token}"}
     r = requests.get("https://api.spotify.com/v1/me/player/currently-playing", headers=headers)
     id, track, artist, album = getCurrentTrack(access_token)
-    album_cover_url = getAlbumCoverURL(id)
+    album_cover_url = getAlbumCoverURL(id, session["spotify_access_token"])
     previous_listens = calculatePreviousListens(id)
     return render_template('playing.html', track=track, artist=artist, album=album, previous_listens=previous_listens, album_cover_url=album_cover_url, id=id)
 
@@ -108,23 +108,4 @@ def error():
 
 
 if __name__ == '__main__':
-    url = "https://accounts.spotify.com/api/token"
-    data = {
-        "grant_type": "client_credentials",
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET
-    }
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-    response = requests.post(url, data=data, headers=headers)
-    if response.status_code == 200:
-        token_info = response.json()
-        access_token = token_info['access_token']
-        # Update the .env file with the access token and overwite
-        with open('.env', 'w') as f:
-            f.write(f"SPOTIFY_ACCESS_TOKEN={access_token}\n")
-        print("Access token saved to .env file.")
-    else:
-        print("Failed to get token:", response.status_code, response.text)
     app.run()

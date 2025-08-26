@@ -1,7 +1,6 @@
 import requests
 import json
 import os
-from dotenv import load_dotenv
 
 def checkPlaying(user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
@@ -82,11 +81,9 @@ def calculatePreviousListens(playing_track_id):
                             previous_listens += 1
     return previous_listens
 
-def getAlbumCoverURL(playing_track_id):
-    load_dotenv()
-    app_access_token = os.getenv("SPOTIFY_ACCESS_TOKEN")
+def getAlbumCoverURL(playing_track_id, spotify_access_token):
     url = f"https://api.spotify.com/v1/tracks/{playing_track_id}"
-    headers = {"Authorization": f"Bearer {app_access_token}"}
+    headers = {"Authorization": f"Bearer {spotify_access_token}"}
     response = requests.get(url, headers=headers, params={"market": "GB"})
     if response.status_code == 200:
         data = response.json()
