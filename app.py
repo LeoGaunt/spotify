@@ -1,12 +1,10 @@
-from config import app
+from config import app, CLIENT_ID, CLIENT_SECRET
 from flask import render_template, redirect, request, session, send_file
 import requests
 from utilities import checkPlaying, getCurrentTrack, skipTrack, calculatePreviousListens, getAlbumCoverURL, getDataFromID
 from graphs import listens_by_week, plot_listens_image
 
-# Spotify app credentials
-CLIENT_ID = "855f96d962fa471b916c7cd22d50ace9"
-CLIENT_SECRET = "de860b487af94cd190c37cb3110e3c2a"
+# Spotify credentials
 REDIRECT_URI = "http://127.0.0.1:5000/callback"
 
 # Scopes required to read what I want to access

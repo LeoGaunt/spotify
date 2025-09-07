@@ -1,12 +1,15 @@
 from flask import Flask, session
 import requests
 import secrets
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
-CLIENT_ID = "855f96d962fa471b916c7cd22d50ace9"
-CLIENT_SECRET = "de860b487af94cd190c37cb3110e3c2a"
+load_dotenv()
+CLIENT_ID = os.environ.get("CLIENT_ID")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 
 @app.before_request
 def check_valid_access_token():
